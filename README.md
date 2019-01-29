@@ -72,7 +72,13 @@ Operation 2. uses packed operations. However, in operation 1., this is different
 vbroadcastss    $1, %xmm2
 ```
 
-will broadcast the literal `$1` to four positions in the 128-bit-sized register `%xmm2`. *Tip: It should be safe for you to use %xmm0 through %xmm7 as scratch registers. The code as given is using %xmm0 and %xmm1.*
+will broadcast the literal `$1` to four positions in the 128-bit-sized register `%xmm2`. The end result would look like this:
+
+| First quarter | Second quarter | Third quarter | Fourth quarter |
+| --- | --- | --- | --- |
+| `1` | `1` | `1` | `1` |
+
+*Tip: It should be safe for you to use %xmm0 through %xmm7 as scratch registers. The code as given is using %xmm0 and %xmm1.*
 
 # Approach
 
@@ -99,17 +105,17 @@ Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.700s
 user	0m0.484s
-sys	0m0.216s
+sys	    0m0.216s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.692s
 user	0m0.456s
-sys	0m0.236s
+sys	    0m0.236s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.702s
 user	0m0.461s
-sys	0m0.241s
+sys	    0m0.241s
 ```
 
 These are the result I get on the same machine, after altering the assembly code to carry out SIMD:
@@ -120,17 +126,17 @@ Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.398s
 user	0m0.171s
-sys	0m0.227s
+sys     0m0.227s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.395s
 user	0m0.172s
-sys	0m0.223s
+sys     0m0.223s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.392s
 user	0m0.132s
-sys	0m0.260s
+sys     0m0.260s
 ```
 
 # Check off
