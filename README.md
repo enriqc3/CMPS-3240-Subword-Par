@@ -58,6 +58,22 @@ Because the `%xmm` registers are 128 bits--large enough for two doubles. We are 
 
 Functionally, this means we have to change the suffix of our SIMD instructions. For example, we used `mouvpd` and `movusd` for unaligned packed and unaligned scalar movement operations with doubles. For this lab, the suffix would change to: `movups` and `movuss` respectively. The last character indicates the operation should be single precision. Also, since we are operating on chunks of four instead of two, we should increment our index counter `i` by units of 4, rather than 2. Finally, the FAXPY operation is an addition, not a multiplication, so be sure to use the `add` instruction rather than a multiplication.
 
+### Broadcasting vs. Packing
+
+The act of packing a multimedia register takes successive values from an array and places them into an oversized register. With the AXPY operation, we carry out the following:
+
+1. Multiply a scalar `a` times `x[i]`
+2. Add the result from 1. to `y[i]`
+3. Store the result from 2. into `result[i]`
+
+Operation 2. uses packed operations. However, in operation 1., this is different. We must take a single value and repeat it across the many positions in the oversized register. The operation to do this in x86 is `vbroadcast`, and we are using singles so you should use the `ss` suffix. For example:
+
+```x86
+vbroadcastss    $1, %xmm2
+```
+
+will broadcast the literal `$1` to four positions in the 128-bit-sized register `%xmm2`. *Tip: It should be safe for you to use %xmm0 through %xmm7 as scratch registers. The code as given is using %xmm0 and %xmm1.*
+
 # Approach
 
 The approach for this lab is as follows:
@@ -75,25 +91,46 @@ Some tips:
 * If you want to start your `myblas.s` file over from scratch use the `make reset` target
 * Don't forget to increment the array counter in units of 4
 
-For reference, this is what i get with an unoptimized code:
+For reference, this is what i get with an unoptimized code on a machine with an Intel Xeon E5-2630 v2 running at 2.60GHz:
 
 ```shell
 $ for i in {1..3}; do time ./bench_faxpy.out 200000000; done;
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
-real    0m0.565s
-user    0m0.352s
-sys     0m0.212s
+real	0m0.700s
+user	0m0.484s
+sys	0m0.216s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
-real    0m0.559s
-user    0m0.376s
-sys     0m0.180s
+real	0m0.692s
+user	0m0.456s
+sys	0m0.236s
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
-real    0m0.508s
-user    0m0.340s
-sys     0m0.164s
+real	0m0.702s
+user	0m0.461s
+sys	0m0.241s
+```
+
+These are the result I get on the same machine, after altering the assembly code to carry out SIMD:
+
+```shell
+$ for i in {1..3}; do time ./bench_faxpy.out 200000000; done;
+Benchmarking FAXPY operation on an array of size 100000000 x 1
+
+real	0m0.398s
+user	0m0.171s
+sys	0m0.227s
+Benchmarking FAXPY operation on an array of size 100000000 x 1
+
+real	0m0.395s
+user	0m0.172s
+sys	0m0.223s
+Benchmarking FAXPY operation on an array of size 100000000 x 1
+
+real	0m0.392s
+user	0m0.132s
+sys	0m0.260s
 ```
 
 # Check off
