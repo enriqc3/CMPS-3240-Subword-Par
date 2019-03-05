@@ -101,7 +101,7 @@ Some tips:
 For reference, this is what i get with an unoptimized code on a machine with an Intel Xeon E5-2630 v2 running at 2.60GHz:
 
 ```shell
-$ for i in {1..3}; do time ./bench_faxpy.out 200000000; done;
+$ for i in {1..3}; do time ./bench_faxpy.out; done;
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.700s
@@ -122,7 +122,7 @@ sys	    0m0.241s
 These are the result I get on the same machine, after altering the assembly code to carry out SIMD:
 
 ```shell
-$ for i in {1..3}; do time ./bench_faxpy.out 200000000; done;
+$ for i in {1..3}; do time ./bench_faxpy.out; done;
 Benchmarking FAXPY operation on an array of size 100000000 x 1
 
 real	0m0.398s
