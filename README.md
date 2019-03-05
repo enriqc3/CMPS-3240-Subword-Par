@@ -58,7 +58,7 @@ Because the `%xmm` registers are 128 bits--large enough for two doubles. We are 
 | --- | --- | --- | --- |
 | `array[i]` | `array[i+1]` | `array[i+2]` | `array[i+3]` |
 
-Functionally, this means we have to change the suffix of our SIMD instructions. For example, we used `mouvpd` and `movusd` for unaligned packed and unaligned scalar movement operations with doubles. For this lab, the suffix would change to: `movups` and `movuss` respectively. The last character indicates the operation should be single precision. Finally, the FAXPY operation is an addition, not a multiplication, so be sure to use the `add` instruction rather than a multiplication.
+Functionally, this means we have to change the suffix of our SIMD instructions. For example, we used `movsd` and `movupd` for scalar and packed double-precision operations. For this lab, the suffix would change to: `movss` and `movups` respectively. The last character indicates the operation should be single precision. Finally, the FAXPY operation is an addition, not a multiplication, so be sure to use the `add` instruction rather than a multiplication.
 
 ### Broadcasting vs. Packing
 
